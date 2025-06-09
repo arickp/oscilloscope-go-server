@@ -4,7 +4,7 @@ Welcome! This repository is my digital portfolio; a collection of programming ex
 
 ## Contents:
 
-### oscilloscope-go-server
+### [oscilloscope-go-server](./oscilloscope-go-server)
 
 An HTTP server that serves up animated GIFs of waveform animations, written in Go.
 Based on samples from the first chapter of _The Go Programming Language_ by
