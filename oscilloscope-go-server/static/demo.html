@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌀 Lissajous WebP Generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
+  <script src="/static/demo.js" defer></script>
+  <link rel="stylesheet" href="/static/demo.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-black text-green-400 font-mono p-6">
+  <div class="max-w-xl mx-auto text-center">
+    <h1 class="text-3xl mb-6">
+      <a target="_blank" href="https://github.com/arickp/sample-code/tree/main/oscilloscope-go-server"
+        class="group text-green-400 border-b-4 border-green-400 border-opacity-50 hover:border-opacity-100 transition inline-flex items-center space-x-2">
+        <span>🌀 WebP Oscilloscope</span>
+      </a>
+    </h1>
+
+    <form id="waveformForm" class="space-y-4">
+      <div>
+        <label class="block mb-1">Foreground color</label>
+        <div id="fgPicker"></div>
+        <input type="hidden" name="fgColor" id="fgColor" value="#00ff00ff">
+      </div>
+      <div>
+        <label class="block mb-1">Background color</label>
+        <div id="bgPicker"></div>
+        <input type="hidden" name="bgColor" id="bgColor" value="#000000cc">
+      </div>
+      <div>
+        <label class="block mb-1">Frames per second (FPS)</label>
+        <input name="frames" type="number" value="60" min="10" max="200"
+          class="w-full p-2 bg-gray-800 border border-green-400 rounded" />
+      </div>
+      <button id="submitButton" type="submit"
+        class="px-4 py-2 bg-green-500 hover:bg-green-400 text-black rounded shadow-md">
+        Generate
+      </button>
+    </form>
+
+    <div class="mt-8">
+      <img id="preview" class="mx-auto border-4 border-green-400" width="300" height="300" />
+    </div>
+  </div>
+</body>
+
+</html>

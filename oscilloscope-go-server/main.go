@@ -2,54 +2,25 @@
 package main
 
 import (
-	"fmt"
-	"image"
+	"bytes"
 	"image/color"
-	"image/gif"
-	"io"
 	"log"
-	"math"
-	"math/rand"
 	"net/http"
 	"os"
+	"os/exec"
+	"oscilloscope-go-server/utils"
 	"strconv"
-	"strings"
+	"time"
 
 	"github.com/joho/godotenv"
 )
 
-func randomColor() color.Color {
-	return color.RGBA{
-		R: uint8(rand.Intn(256)),
-		G: uint8(rand.Intn(256)),
-		B: uint8(rand.Intn(256)),
-		A: 0xff,
+func getRemoteIP(r *http.Request) string {
+	remoteIP := r.RemoteAddr
+	if ip := r.Header.Get("X-Forwarded-For"); ip != "" {
+		remoteIP = ip
 	}
-}
-
-func hexStringToColor(hexString string) (color.Color, error) {
-	hexString = strings.TrimPrefix(hexString, "#")
-	if len(hexString) != 6 {
-		return nil, fmt.Errorf("invalid length for hex color: %q", hexString)
-	}
-	if strings.ToLower(hexString) == "random" {
-		return randomColor(), nil
-	}
-	rVal, err := strconv.ParseUint(hexString[0:2], 16, 8)
-	if err != nil {
-		return nil, fmt.Errorf("invalid red value: %w", err)
-	}
-	gVal, err := strconv.ParseUint(hexString[2:4], 16, 8)
-	if err != nil {
-		return nil, fmt.Errorf("invalid green value: %w", err)
-	}
-	bVal, err := strconv.ParseUint(hexString[4:6], 16, 8)
-	if err != nil {
-		return nil, fmt.Errorf("invalid blue value: %w", err)
-	}
-
-	col := color.RGBA{uint8(rVal), uint8(gVal), uint8(bVal), 255}
-	return col, nil
+	return remoteIP
 }
 
 func main() {
@@ -60,8 +31,7 @@ func main() {
 		DefaultBgColor = color.RGBA{0, 0, 0, 255}
 	)
 
-	err := godotenv.Load()
-	if err != nil {
+	if dotenvErr := godotenv.Load(); dotenvErr != nil {
 		log.Println("No .env file found, using default settings")
 	}
 
@@ -70,64 +40,87 @@ func main() {
 		port = strconv.Itoa(DefaultPort)
 	}
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	var ffmpegAvailable bool
+	if _, ffmpegErr := exec.LookPath("ffmpeg"); ffmpegErr != nil {
+		log.Fatal("❌ ffmpeg not found")
+		ffmpegAvailable = false
+	} else {
+		log.Println("✅ ffmpeg found in PATH")
+		ffmpegAvailable = true
+	}
+
+	http.HandleFunc("/lissajous", func(writer http.ResponseWriter, request *http.Request) {
+		start := time.Now()
+		remoteIP := getRemoteIP(request)
+		log.Printf("🌍 Request to create waveform from IP: %s, User-Agent: %s", remoteIP, request.UserAgent())
+
+		if !ffmpegAvailable {
+			log.Println("ffmpeg not installed, cannot process request")
+			http.Error(writer, "Server error", http.StatusInternalServerError)
+			return
+		}
+
 		var err error
 		var fgColor color.Color = DefaultFgColor
 		var bgColor color.Color = DefaultBgColor
 		cycles := 5.0
 		res := 0.001
 		size := 100
-		nframes := 64
-		delay := 8
-		bgColorHexString := r.URL.Query().Get("bgColor")
-		fgColorHexString := r.URL.Query().Get("fgColor")
+		bgColorHexString := request.URL.Query().Get("bgColor")
+		fgColorHexString := request.URL.Query().Get("fgColor")
 
 		if bgColorHexString != "" {
-			bgColor, err = hexStringToColor(bgColorHexString)
+			bgColor, err = utils.HexStringToColor(bgColorHexString)
 			if err != nil {
-				http.Error(w, "Invalid bgColor: "+err.Error(), http.StatusBadRequest)
+				http.Error(writer, "Invalid bgColor: "+err.Error(), http.StatusBadRequest)
+				return
 			}
 		}
 
 		if fgColorHexString != "" {
-			fgColor, err = hexStringToColor(fgColorHexString)
+			fgColor, err = utils.HexStringToColor(fgColorHexString)
 			if err != nil {
-				http.Error(w, "Invalid bgColor: "+err.Error(), http.StatusBadRequest)
+				http.Error(writer, "Invalid bgColor: "+err.Error(), http.StatusBadRequest)
+				return
 			}
 		}
 
-		lissajous(w, cycles, res, size, nframes, delay, bgColor, fgColor)
-	})
-	var address = "0.0.0.0:" + port
-	log.Println("Listening on " + address)
-	log.Fatal(http.ListenAndServe(address, nil))
-}
-
-func lissajous(out io.Writer, cycles float64, res float64, size int, nframes int, delay int, bgColor color.Color, fgColor color.Color) {
-	freq := rand.Float64() * 3.0 // relative frequency of y oscillator
-	anim := gif.GIF{LoopCount: nframes}
-	phase := 0.0 // phase difference
-	palette := []color.Color{bgColor, fgColor}
-
-	const (
-		bgColorIndex = 0
-		fgColorIndex = 1
-	)
-
-	for i := 0; i < nframes; i++ {
-		rect := image.Rect(0, 0, 2*size+1, 2*size+1)
-		img := image.NewPaletted(rect, palette)
-
-		for t := 0.0; t < cycles*2*math.Pi; t += res {
-			x := math.Sin(t)
-			y := math.Sin(t*freq + phase)
-			img.SetColorIndex(size+int(x*float64(size)+0.5), size+int(y*float64(size)+0.5), fgColorIndex)
+		frames := 60 // default
+		if framesStr := request.URL.Query().Get("frames"); framesStr != "" {
+			if parsed, err := strconv.Atoi(framesStr); err == nil && parsed > 0 && parsed <= 200 {
+				frames = parsed
+			}
 		}
 
-		phase += 0.1
-		anim.Delay = append(anim.Delay, delay)
-		anim.Image = append(anim.Image, img)
-	}
+		var buf bytes.Buffer
+		if lissajousErr := utils.Lissajous(&buf, cycles, res, size, frames, bgColor, fgColor); lissajousErr != nil {
+			log.Printf("❌ Failed to generate waveform: %v", lissajousErr)
+			http.Error(writer, "Error generating animation", http.StatusInternalServerError)
+			return
+		}
 
-	gif.EncodeAll(out, &anim)
+		writer.Header().Set("Content-Type", utils.LissajousMimeType)
+		writer.Header().Set("Content-Length", strconv.Itoa(buf.Len()))
+		if _, writeErr := writer.Write(buf.Bytes()); writeErr != nil {
+			log.Printf("❌ Failed to send response")
+			return
+		}
+
+		elapsed := time.Since(start)
+		log.Printf("✅ Waveform created in %dms", elapsed.Milliseconds())
+	})
+
+	// Serve static files like JS, CSS, and demo.html
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
+	// Root path serves demo.html
+	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
+		remoteIP := getRemoteIP(request)
+		log.Printf("🌍 Request to view demo from IP: %s, User-Agent: %s", remoteIP, request.UserAgent())
+		http.ServeFile(writer, request, "static/demo.html")
+	})
+
+	var address = "0.0.0.0:" + port
+	log.Println("📡 Listening on " + address)
+	log.Fatal(http.ListenAndServe(address, nil))
 }

@@ -1,12 +1,13 @@
-# Oscilloscope Go Server by Eric Popelka
+# Oscilloscope Go Server by [Eric Popelka](https://github.com/arickp)
 
-This is a lightweight Go server that serves animated GIF waveforms, with customizable foreground and background colors via query string parameters.
-Based on the sample program in the first chapter of _The Go Programming Language_ by Donovan and Kernighan. 
+This is a lightweight Go server that serves animated WebP waveforms, with customizable foreground and background colors. It's based on the sample program in the first chapter of _The Go Programming Language_ 
+by Donovan and Kernighan. 
 
 ## 🚀 Features
 
-- Customize waveform color using `?fgColor=#RRGGBB` and `&bgColor=#RRGGBB`. (Remember to encode the`#` character by providing `%23` in its place. For a random color, provide a vlaue of `random` for either value.)
-- Supports `random` for either color
+- Customize waveform color 
+- Creates transparent WebP files
+- Supports full alpha transparency for WebP output (great for compositing)
 - Configurable port via `PORT` environment variable. Default is 8000.
 - Lightweight and fast — written in pure Go
 
@@ -15,14 +16,14 @@ Based on the sample program in the first chapter of _The Go Programming Language
 ## 📦 Requirements
 
 - Go 1.24 or newer
-- Internet browser or any HTTP client (like `curl`)
+- [ffmpeg](https://ffmpeg.org)
 - Docker (optional)
 
 ---
 
 ## 🔧 Usage
 
-### ▶️ Run directly
+### ▶️ Run the server
 
 ```bash
 go run main.go
@@ -44,57 +45,50 @@ Then run it:
 
 ## 🌐 Making a request
 
-### Default URL:
+### Demo page:
 
 ```http
-http://localhost:8000/?fgColor=%23ff0000&bgColor=%23000000
+http://localhost:8000/
 ```
 
-(The `%23` is URL-encoded `#`.)
+Visiting / in your browser loads a built-in demo UI served by the Go backend — a static HTML page with a color picker, frame control, and real-time preview.
+The Go server serves a static HTML page with a color picker, frame control, and a real-time preview of the 
+waveform. It uses JavaScript to call the /lissajous endpoint and render the generated animation.
 
-### Use random colors:
+![Preview of the waveform UI](./static/sample.jpg)
 
-```http
-http://localhost:8000/?fgColor=random&bgColor=random
-```
+
+You'll have to run the program (by making requests to the server) for the full, animated experience!
 
 ---
 
-## ⚙️ Configuring the port
-
-You can override the default port (`8000`) by setting the `PORT` environment variable:
-
-```bash
-PORT=9000 go run main.go
-```
-
-or if using the binary:
-
-```bash
-PORT=9000 ./oscilloscope-go-server
-```
-
-Then hit:
+### API:
 
 ```http
-http://localhost:9000/?fgColor=random&bgColor=random
+http://localhost:8000/lissajous?fgColor=%23rrggbbaa&bgColor=%23rrggbbaa&frames=x
 ```
+
+* `fgColor` and `bgColor` must be hex strings in the form `#rrggbbaa` (URL-encoded as `%23rrggbbaa`).
+* Returns a response in `image/webp` format.
 
 ---
 
-## 📎 Example curl command
+## 🧪 Dev Tips
+- To run the test suite:
 
 ```bash
-curl "http://localhost:8000/?fgColor=%23ff9900&bgColor=%23000000" --output waveform.gif
+go test ./...
 ```
 
----
-
-## 🧪 Dev tip
-
-You can build a Docker image and run it using these commands:
+- You can build a Docker image and run it using these commands:
 
 ```bash
-docker build -t oscilloscope-go-server
+docker build --tag oscilloscope-go-server .
 docker run -p 8000:8000 oscilloscope-go-server
 ```
+
+- When calling the `/lissajous` endpoint, you can provide `random` as the value of
+  `fgColor` and/or `bgColor`.
+
+- Don’t forget to URL-encode `#` as `%23` when testing the API in the browser or curl/Postman.
+  
