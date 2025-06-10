@@ -4,21 +4,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🌀 Lissajous WebP Generator</title>
+  <title>Oscilloscope Image Generator</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
   <script src="/static/demo.js" defer></script>
   <link rel="stylesheet" href="/static/demo.css">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/static/logo.png">
 </head>
 
 <body class="bg-black text-green-400 font-mono p-6">
   <div class="max-w-xl mx-auto text-center">
     <h1 class="text-3xl mb-6">
       <a target="_blank" href="https://github.com/arickp/sample-code/tree/main/oscilloscope-go-server"
-        class="group text-green-400 border-b-4 border-green-400 border-opacity-50 hover:border-opacity-100 transition inline-flex items-center space-x-2">
-        <span>🌀 WebP Oscilloscope</span>
+        class="group inline-flex items-center space-x-3 text-green-400 border-b-4 border-green-400 border-opacity-50 hover:border-opacity-100 transition">
+        <span>
+          <img src="/static/logo.png" alt="Oscilloscope logo"
+            class="w-8 h-8 transition duration-300 group-hover:drop-shadow-[0_0_6px_#00ff00]" />
+        </span>
+        <span>Oscilloscope Image Generator</span>
       </a>
     </h1>
 
