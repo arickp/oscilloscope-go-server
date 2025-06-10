@@ -1,6 +1,6 @@
 # Eric Popelka's code samples
 
-Welcome! This repository is my digital portfolio; a collection of programming exercises that I am deleted to share with you.
+Welcome! This repository is my digital portfolio, a collection of programming exercises that I am delighted to share with you.
 
 ## Contents:
 
