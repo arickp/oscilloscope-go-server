@@ -3,6 +3,12 @@
 This is a lightweight Go server that serves animated WebP waveforms, with customizable foreground and background colors. It's based on the sample program in the first chapter of _The Go Programming Language_ 
 by Donovan and Kernighan. 
 
+## 📸 Screenshot
+![User interface](./static/sample.jpg)
+
+You'll have to run the program (by making requests to the server) for the full, animated experience!
+
+
 ## 🚀 Features
 
 - Customize waveform color 
@@ -54,11 +60,6 @@ http://localhost:8000/
 Visiting / in your browser loads a built-in demo UI served by the Go backend — a static HTML page with a color picker, frame control, and real-time preview.
 The Go server serves a static HTML page with a color picker, frame control, and a real-time preview of the 
 waveform. It uses JavaScript to call the /lissajous endpoint and render the generated animation.
-
-![Preview of the waveform UI](./static/sample.jpg)
-
-
-You'll have to run the program (by making requests to the server) for the full, animated experience!
 
 ---
 
