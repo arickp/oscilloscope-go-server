@@ -11,9 +11,9 @@ You'll have to run the program (by making requests to the server) for the full, 
 
 ## 🚀 Features
 
-- Customize waveform color 
+- Customize waveform color (with alpha channel support)
+- Specify playback FPS for the output animation
 - Creates transparent WebP files
-- Supports full alpha transparency for WebP output (great for compositing)
 - Configurable port via `PORT` environment variable. Default is 8000.
 - Lightweight and fast — written in pure Go
 
@@ -38,7 +38,7 @@ go run main.go
 ### 🏗️ Build the binary
 
 ```bash
-go build -o oscilloscope-go-server main.go
+go build -o oscilloscope-go-server *.go
 ```
 
 Then run it:
@@ -57,7 +57,7 @@ Then run it:
 http://localhost:8000/
 ```
 
-Visiting / in your browser loads a built-in demo UI served by the Go backend — a static HTML page with a color picker, frame control, and real-time preview.
+Visiting / in your browser loads a built-in demo UI served by the Go backend — a static HTML page with a color picker, FPS control, and real-time preview.
 The Go server serves a static HTML page with a color picker, frame control, and a real-time preview of the 
 waveform. It uses JavaScript to call the /lissajous endpoint and render the generated animation.
 
@@ -93,3 +93,11 @@ docker run -p 8000:8000 oscilloscope-go-server
 
 - Don’t forget to URL-encode `#` as `%23` when testing the API in the browser or curl/Postman.
   
+## ♿️ 508 Compliant
+
+This project strives to meet **[Section 508](https://www.section508.gov/) accessibility standards**:
+
+- Keyboard-navigable interface
+- Screen reader-friendly structure
+- ARIA live regions for status updates
+- Color pickers with manual hex input fallback

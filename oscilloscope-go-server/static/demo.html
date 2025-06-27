@@ -15,6 +15,8 @@
 </head>
 
 <body class="bg-black text-green-400 font-mono p-6">
+  <a href="#waveformForm" class="sr-only focus:not-sr-only">Skip to form</a>
+
   <div class="max-w-xl mx-auto text-center">
     <h1 class="text-3xl mb-6">
       <a target="_blank" href="https://github.com/arickp/sample-code/tree/main/oscilloscope-go-server"
@@ -28,29 +30,46 @@
     </h1>
 
     <form id="waveformForm" class="space-y-4">
-      <div>
-        <label class="block mb-1">Foreground color</label>
-        <div id="fgPicker"></div>
+ <div>
+        <label for="fgColorHex" class="block mb-1">Foreground color (Hex)</label>
+        <input id="fgColorHex" name="fgColorHex" type="text" value="#00ff00ff"
+          class="w-full p-2 bg-gray-800 border border-green-400 rounded"
+          pattern="^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+          aria-describedby="fgColorDesc">
+        <p id="fgColorDesc" class="text-sm text-green-200">Enter hex color manually (e.g., #00ff00ff) or use the picker below.</p>
+        <div id="fgPicker" aria-label="Foreground color picker" class="mt-2"></div>
         <input type="hidden" name="fgColor" id="fgColor" value="#00ff00ff">
       </div>
+
       <div>
-        <label class="block mb-1">Background color</label>
-        <div id="bgPicker"></div>
+        <label for="bgColorHex" class="block mb-1">Background color (Hex)</label>
+        <input id="bgColorHex" name="bgColorHex" type="text" value="#000000cc"
+          class="w-full p-2 bg-gray-800 border border-green-400 rounded"
+          pattern="^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+          aria-describedby="bgColorDesc">
+        <p id="bgColorDesc" class="text-sm text-green-200">Enter hex color manually (e.g., #000000cc) or use the picker below.</p>
+        <div id="bgPicker" aria-label="Background color picker" class="mt-2"></div>
         <input type="hidden" name="bgColor" id="bgColor" value="#000000cc">
-      </div>
+      </div>      
+
       <div>
-        <label class="block mb-1">Frames per second (FPS)</label>
-        <input name="frames" type="number" value="60" min="10" max="200"
+        <label class="block mb-1" for="frames">Frames per second (FPS)</label>
+        <input id="frames" name="frames" type="number" value="60" min="1" max="1000"
           class="w-full p-2 bg-gray-800 border border-green-400 rounded" />
       </div>
       <button id="submitButton" type="submit"
-        class="px-4 py-2 bg-green-500 hover:bg-green-400 text-black rounded shadow-md">
+        class="px-4 py-2 bg-green-500 hover:bg-green-400 text-black rounded shadow-md focus:outline-none focus:ring-2 focus:ring-green-300">
         Generate
       </button>
     </form>
 
+    <!-- Status display for microservice job status -->
+    <div aria-live="polite" id="status" class="mt-4 text-green-300 text-lg">
+      <!-- dynamic status will appear here -->
+    </div>
+
     <div class="mt-8">
-      <img id="preview" class="mx-auto border-4 border-green-400" width="300" height="300" />
+      <img alt="Waveform preview will appear here" id="preview" class="mx-auto border-4 border-green-400 invisible" width="300" height="300" />
     </div>
   </div>
 </body>

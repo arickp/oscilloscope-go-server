@@ -1,10 +1,10 @@
 package utils
 
 import (
+	"fmt"
 	"image/color"
 	"math/rand"
-  "fmt"
-  "strconv"
+	"strconv"
 	"strings"
 )
 
@@ -18,7 +18,7 @@ func randomColor() color.Color {
 	}
 }
 
-// Converts a string like "#ff0000ff" to a `color.Color`` struct value
+// Converts a string like "#ff0000ff" to a `color.Color“ struct value
 // If hexString == "random", returns a random color.
 func HexStringToColor(hexString string) (color.Color, error) {
 	if strings.ToLower(hexString) == "random" {
@@ -26,7 +26,7 @@ func HexStringToColor(hexString string) (color.Color, error) {
 	}
 
 	hexString = strings.TrimPrefix(hexString, "#")
-	if len(hexString) != 6  && len(hexString) != 8 {
+	if len(hexString) != 6 && len(hexString) != 8 {
 		return nil, fmt.Errorf("invalid length for hex color: %q", hexString)
 	}
 	rVal, err := ParseUint8FromHexString(hexString[0:2])
@@ -46,14 +46,13 @@ func HexStringToColor(hexString string) (color.Color, error) {
 	if len(hexString) == 8 {
 		aVal, err = ParseUint8FromHexString(hexString[6:8])
 		if err != nil {
-				return nil, fmt.Errorf("invalid alpha value: %w", err)
-		}            
+			return nil, fmt.Errorf("invalid alpha value: %w", err)
+		}
 	}
 
 	col := color.RGBA{rVal, gVal, bVal, aVal}
 	return col, nil
 }
-
 
 // ParseUint8 parses a hex string (like "ff") into a uint8.
 // Returns an error if the string is not a valid number
