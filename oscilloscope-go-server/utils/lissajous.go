@@ -19,7 +19,7 @@ import (
 )
 
 const ANIMATION_DURATION = 5 * time.Second // Total duration of the animation
-const SLEEP_DURATION = 1 * time.Nanosecond // Duration to sleep between frames
+const SLEEP_DURATION = 1 * time.Millisecond // Duration to sleep between frames
 
 // Lissajous generates a Lissajous figure as an animated WebP
 //
