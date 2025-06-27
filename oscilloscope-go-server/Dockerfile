@@ -30,7 +30,7 @@ COPY --from=builder /app/oscilloscope-go-server .
 COPY static ./static
 
 # Copy optional .env file (you can override it at runtime)
-COPY .env .
+COPY default.env .env
 
 # Expose the port (you can override it)
 EXPOSE 8000
