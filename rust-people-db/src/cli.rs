@@ -246,9 +246,9 @@ pub fn interactive_cli(file: String) -> Result<(), Box<dyn std::error::Error>> {
                                 }
                             }
 
-                            // Use sport menu
+                            // Use sport menu with current sport as default
                             println!("Edit favorite sport (or leave blank to keep current):");
-                            let sport_input = prompt_for_sport();
+                            let sport_input = prompt_for_sport_with_default(Some(&person.favorite_sport));
                             if let Some(sport) = sport_input {
                                 person.favorite_sport = sport;
                             }
@@ -338,42 +338,7 @@ pub fn interactive_cli(file: String) -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn prompt_for_sport() -> Option<Sport> {
-    let mut sport_variants = Sport::all_known_sports();
-    sport_variants.sort_by(|a, b| a.to_string().cmp(&b.to_string()));
-    let mut options: Vec<String> = sport_variants
-        .iter()
-        .map(|sport| format!("{} {}", capitalize_first(&sport.to_string()), sport.emoji()))
-        .collect();
-    options.push("Other...".to_string());
-    println!("Choose a favorite sport:");
-    let ans = Select::new("Select a sport:", options.clone())
-        .with_starting_cursor(0)
-        .prompt();
-    match ans {
-        Ok(choice) => {
-            if choice == "Other..." {
-                let custom = Text::new("Enter custom sport:").prompt();
-                match custom {
-                    Ok(val) => {
-                        let trimmed = val.trim();
-                        if trimmed.is_empty() {
-                            None
-                        } else {
-                            Some(Sport::Other(trimmed.to_string()))
-                        }
-                    }
-                    Err(_) => None,
-                }
-            } else {
-                // Find the original sport variant by matching the display string
-                let selected = sport_variants.iter().find(|sport| {
-                    format!("{} {}", capitalize_first(&sport.to_string()), sport.emoji()) == choice
-                });
-                selected.cloned()
-            }
-        }
-        Err(_) => None,
-    }
+    prompt_for_sport_with_default(None)
 }
 
 fn capitalize_first(s: &str) -> String {

@@ -1,0 +1,2 @@
+msgid "Favorite Sport"
+msgstr "Favourite Sport"

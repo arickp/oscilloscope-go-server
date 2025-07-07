@@ -1,0 +1,126 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+
+msgid "File"
+msgstr "Archivo"
+
+msgid "People"
+msgstr "Personas"
+
+msgid "New"
+msgstr "Nuevo"
+
+msgid "Open"
+msgstr "Abrir"
+
+msgid "Exit"
+msgstr "Salir"
+
+msgid "Add"
+msgstr "Añadir"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Confirm"
+msgstr "Confirmar"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "OK"
+msgstr "Aceptar"
+
+msgid "Are you sure you want to delete"
+msgstr "¿Estás seguro de que quieres eliminar a"
+
+msgid "First Name"
+msgstr "Nombre"
+
+msgid "Last Name"
+msgstr "Apellido"
+
+msgid "Age"
+msgstr "Edad"
+
+msgid "Favorite Sport"
+msgstr "Deporte favorito"
+
+msgid "No people loaded"
+msgstr "No hay personas cargadas"
+
+msgid "Baseball"
+msgstr "Béisbol"
+
+msgid "Soccer"
+msgstr "Fútbol"
+
+msgid "Basketball"
+msgstr "Baloncesto"
+
+msgid "Tennis"
+msgstr "Tenis"
+
+msgid "Golf"
+msgstr "Golf"
+
+msgid "Hockey"
+msgstr "Hockey"
+
+msgid "Cricket"
+msgstr "Críquet"
+
+msgid "Rugby"
+msgstr "Rugby"
+
+msgid "Handball"
+msgstr "Balonmano"
+
+msgid "Football"
+msgstr "Fútbol americano"
+
+msgid "Volleyball"
+msgstr "Voleibol"
+
+msgid "Water polo"
+msgstr "Waterpolo"
+
+msgid "Equestrian"
+msgstr "Equitación"
+
+msgid "Swimming"
+msgstr "Natación"
+
+msgid "Running"
+msgstr "Correr"
+
+msgid "Cycling"
+msgstr "Ciclismo"
+
+msgid "Skating"
+msgstr "Patinaje"
+
+msgid "Skateboarding"
+msgstr "Monopatín"
+
+msgid "Surfing"
+msgstr "Surf"
+
+msgid "Skiing"
+msgstr "Esquí"
+
+msgid "Snowboarding"
+msgstr "Snowboard"
+
+msgid "Rowing"
+msgstr "Remo"
+
+msgid "Wrestling"
+msgstr "Lucha"
+

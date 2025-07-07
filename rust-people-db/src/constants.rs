@@ -1,6 +1,20 @@
 use serde::de::{self, Visitor};
 use serde::{Deserializer, Serializer};
 use std::fmt;
+use gettextrs::gettext;
+
+// TRANSLATABLE STRINGS (for .po files):
+// File, People, New, Open, Exit, Add, Edit, Delete
+// ID, First Name, Last Name, Age, Favorite Sport
+// No people loaded
+// Baseball, Soccer, Basketball, Tennis, Golf, Hockey, Cricket, Rugby, Handball, Football, Volleyball, Water polo, Equestrian, Swimming, Running, Cycling, Skating, Skateboarding, Surfing, Skiing, Snowboarding, Rowing, Wrestling
+// (and any other user-facing string)
+
+pub const APP_NAME: &str = "People DB";
+pub const APP_ID: &str = "com.github.arickp.rustpeopledb";
+pub const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
+pub const CSV_HEADERS: &[&str] = &["first_name", "last_name", "date_of_birth", "favorite_sport"];
+pub const GUI_TABLE_HEADER_COLUMNS: &[&str] = &["ID", "First Name", "Last Name", "Age", "Favorite Sport"];
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Sport {
@@ -121,30 +135,30 @@ impl Sport {
 impl fmt::Display for Sport {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let s = match self {
-            Sport::Baseball => "baseball",
-            Sport::Soccer => "soccer",
-            Sport::Basketball => "basketball",
-            Sport::Tennis => "tennis",
-            Sport::Golf => "golf",
-            Sport::Hockey => "hockey",
-            Sport::Cricket => "cricket",
-            Sport::Rugby => "rugby",
-            Sport::Handball => "handball",
-            Sport::Football => "football",
-            Sport::Volleyball => "volleyball",
-            Sport::WaterPolo => "water polo",
-            Sport::Equestrian => "equestrian",
-            Sport::Swimming => "swimming",
-            Sport::Running => "running",
-            Sport::Cycling => "cycling",
-            Sport::Skating => "skating",
-            Sport::Skateboarding => "skateboarding",
-            Sport::Surfing => "surfing",
-            Sport::Skiing => "skiing",
-            Sport::Snowboarding => "snowboarding",
-            Sport::Rowing => "rowing",
-            Sport::Wrestling => "wrestling",
-            Sport::Other(s) => s,
+            Sport::Baseball => gettext("Baseball"),
+            Sport::Soccer => gettext("Soccer"),
+            Sport::Basketball => gettext("Basketball"),
+            Sport::Tennis => gettext("Tennis"),
+            Sport::Golf => gettext("Golf"),
+            Sport::Hockey => gettext("Hockey"),
+            Sport::Cricket => gettext("Cricket"),
+            Sport::Rugby => gettext("Rugby"),
+            Sport::Handball => gettext("Handball"),
+            Sport::Football => gettext("Football"),
+            Sport::Volleyball => gettext("Volleyball"),
+            Sport::WaterPolo => gettext("Water polo"),
+            Sport::Equestrian => gettext("Equestrian"),
+            Sport::Swimming => gettext("Swimming"),
+            Sport::Running => gettext("Running"),
+            Sport::Cycling => gettext("Cycling"),
+            Sport::Skating => gettext("Skating"),
+            Sport::Skateboarding => gettext("Skateboarding"),
+            Sport::Surfing => gettext("Surfing"),
+            Sport::Skiing => gettext("Skiing"),
+            Sport::Snowboarding => gettext("Snowboarding"),
+            Sport::Rowing => gettext("Rowing"),
+            Sport::Wrestling => gettext("Wrestling"),
+            Sport::Other(s) => s.to_string(),
         };
         write!(f, "{}", s)
     }

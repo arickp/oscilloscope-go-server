@@ -7,9 +7,15 @@ use std::fmt;
 use std::fs::File;
 use std::path::Path;
 use tabled::{Table, Tabled};
+use crate::constants::CSV_HEADERS;
+use log;
+use std::sync::atomic::{AtomicU32, Ordering};
 
+static COUNTER: AtomicU32 = AtomicU32::new(0);
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Person {
+    #[serde(skip_deserializing)]
+    pub id: u32,
     pub first_name: String,
     pub last_name: String,
     #[serde(with = "date_format")]
@@ -48,6 +54,23 @@ impl Person {
         favorite_sport: Sport,
     ) -> Self {
         Person {
+            id: COUNTER.fetch_add(1, Ordering::Relaxed),
+            first_name,
+            last_name,
+            date_of_birth,
+            favorite_sport,
+        }
+    }
+
+    pub fn with_id(
+        id: u32,
+        first_name: String,
+        last_name: String,
+        date_of_birth: NaiveDate,
+        favorite_sport: Sport,
+    ) -> Self {
+        Person {
+            id,
             first_name,
             last_name,
             date_of_birth,
@@ -67,24 +90,32 @@ impl Person {
 
     /// Reads all `Person` records from a CSV file. Returns a vector of `Person` records.
     pub fn read_from_csv<P: AsRef<Path>>(path: P) -> Result<Vec<Person>, Box<dyn Error>> {
-        let file = File::open(path)?; // Open the file. Errors returned immediately.
+        let file = File::open(&path)?; // Open the file. Errors returned immediately.
         let mut reader = csv::Reader::from_reader(file);
         let mut people = Vec::new();
 
         // Iterate for each record in the CSV file.
         for result in reader.deserialize() {
             // Deserialize the record into a `Person` struct.
-            let person: Person = result?;
+            let mut person: Person = result?;
+            // Assign a unique ID since it's skipped during deserialization
+            person.id = COUNTER.fetch_add(1, Ordering::Relaxed);
+
             // Add the `Person` struct to the vector.
             people.push(person);
         }
 
+        log::info!("Read {} {} from CSV file: {}", 
+            people.len(), 
+            if people.len() == 1 {"person" } else { "people" },
+            path.as_ref().display()
+        );
         Ok(people)
     }
 
     /// Writes all `Person` records to a CSV file.
     pub fn write_to_csv<P: AsRef<Path>>(path: P, people: &[Person]) -> Result<(), Box<dyn Error>> {
-        let file = File::create(path)?;
+        let file = File::create(&path)?;
         let mut writer = csv::Writer::from_writer(file);
 
         for person in people {
@@ -92,6 +123,11 @@ impl Person {
         }
 
         writer.flush()?;
+        log::info!("Wrote {} {} to CSV file: {}", 
+            people.len(), 
+            if people.len() == 1 {"person" } else { "people" },
+            path.as_ref().display()
+        );
         Ok(())
     }
 }
@@ -165,4 +201,13 @@ pub fn print_people(people: &[Person]) {
     let mut base_table = Table::new(rows);
     let table = base_table.with(tabled::settings::Style::rounded());
     println!("{}", table);
+}
+
+/// Creates a new CSV file for people with the correct headers.
+pub fn create_new_csv_file<P: AsRef<std::path::Path>>(path: P) -> Result<(), Box<dyn std::error::Error>> {
+    let mut writer = csv::Writer::from_path(&path)?;
+    writer.write_record(CSV_HEADERS)?;
+    writer.flush()?;
+    log::info!("Created new CSV file: {:}", path.as_ref().display());
+    Ok(())
 }

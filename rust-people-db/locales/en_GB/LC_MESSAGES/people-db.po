@@ -1,0 +1,11 @@
+msgid "Last Name"
+msgstr "Surname"
+
+msgid "Favorite Sport"
+msgstr "Favourite Sport"
+
+msgid "Soccer"
+msgstr "Football"
+
+msgid "Football"
+msgstr "American Football"
