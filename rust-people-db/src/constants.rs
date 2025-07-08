@@ -103,7 +103,7 @@ impl Sport {
     }
 
     pub fn from_string(s: &str) -> Sport {
-        match s.trim().to_lowercase().as_str() {
+        match s.trim().to_lowercase().replace(' ', "").as_str() {
             "baseball" => Sport::Baseball,
             "soccer" => Sport::Soccer,
             "basketball" => Sport::Basketball,
@@ -115,7 +115,7 @@ impl Sport {
             "handball" => Sport::Handball,
             "football" => Sport::Football,
             "volleyball" => Sport::Volleyball,
-            "water polo" | "water_polo" => Sport::WaterPolo,
+            "waterpolo" => Sport::WaterPolo, // Accepts 'water polo' and 'waterpolo'
             "equestrian" => Sport::Equestrian,
             "swimming" => Sport::Swimming,
             "running" => Sport::Running,
@@ -127,7 +127,15 @@ impl Sport {
             "snowboarding" => Sport::Snowboarding,
             "rowing" => Sport::Rowing,
             "wrestling" => Sport::Wrestling,
-            other => Sport::Other(other.to_string()),
+            other => {
+                // Special normalization for water polo
+                let t = s.trim().to_lowercase();
+                if t == "water polo" || t == "waterpolo" {
+                    Sport::WaterPolo
+                } else {
+                    Sport::Other(s.trim().to_string())
+                }
+            },
         }
     }
 }

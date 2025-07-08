@@ -1,5 +1,30 @@
 # rust-people-db
 
+## Requirements
+
+- **Rust**: Install using [rustup.rs](https://rustup.rs/) (recommended for all platforms)
+- **GTK4 & Gettext**: Required for the GUI. Install as follows:
+  - **Linux**: Use your package manager (e.g., `sudo apt install libgtk-4-dev gettext`) for Ubuntu/Debian.
+  - **macOS**: Use Homebrew: `brew install gtk4 gettext`
+  - **Windows**: Use [MSYS2](https://www.msys2.org/) and run:
+    ```sh
+    pacman -S mingw-w64-x86_64-gtk4 mingw-w64-x86_64-gettext
+    ```
+    - **Important:** You must use the GNU toolchain (`stable-x86_64-pc-windows-gnu`) with MSYS2. The MSVC toolchain is not supported for GTK4 Rust GUI development with MSYS2 libraries.
+    - After installing Rust with rustup, set the default toolchain to GNU:
+      ```sh
+      rustup default stable-x86_64-pc-windows-gnu
+      ```
+    - All build commands should be run inside the `mingw64` shell in MSYS2. If you
+     encounter build errors about missing `gettext` or GTK4, double-check that you 
+     are in the correct shell, the packages above are installed, and you are using the GNU toolchain. Also try disabling your anti-virus software, as tools such as Malwarebytes may incorrectly identify the Rust build tools as malware. 
+
+> **Not supported:** Chromebook and Raspbian are not supported, as they do not currently provide GTK4 packages.
+
+- **VS Code Rust Development**: For best experience, install the [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer) extension. This is recommended in `.vscode/extensions.json`.
+
+---
+
 ## Author
 
 [Eric Popelka](https://github.com/arickp)
@@ -49,29 +74,6 @@ cargo run --bin people-db -- examples/people.csv
 ```
 
 The interactive interface guides you through adding, editing, deleting, and viewing people records with a clean, user-friendly experience.
-
-![CLI Screenshot](examples/cli.png)
-
-## Features
-
-### Both Interfaces
-- **Data validation** with helpful error messages
-- **CSV file management** (creates file if it doesn't exist)
-- **Structured data fields** including names, birth dates, and favorite sports
-- **Sport selection** with emoji icons and predefined options
-- **Full internationalization** support (Spanish translation included)
-
-### CLI Interface
-- **Interactive prompts** for all operations
-- **Edit and delete by index** for easy record management
-- **Command-line arguments** for direct operations
-
-### GTK Interface
-- **Modern GUI** with menu-based navigation
-- **Table view** with sortable columns
-- **Confirmation dialogs** for destructive operations
-- **File chooser dialogs** for easy file management
-- **ID-based operations** for reliable record management
 
 ## Getting Started
 

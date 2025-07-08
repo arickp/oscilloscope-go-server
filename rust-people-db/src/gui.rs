@@ -1,14 +1,13 @@
 use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow, Button, Label, Orientation, Window, TreeView, ListStore, TreeViewColumn, CellRendererText, SelectionMode, Dialog, Entry, FileChooserDialog, FileChooserAction, ResponseType, Image, Box as GtkBox, Button as GtkButton, ComboBoxText, PopoverMenu, PopoverMenuBar, MenuButton};
-use gtk::gio::{ApplicationFlags, Menu, MenuItem};
-use gtk::gio::prelude::*;
+use gtk::gio::{ApplicationFlags};
 use log;
 use std::cell::RefCell;
-use std::rc::{Rc, Weak};
+use std::rc::Rc;
 use gettextrs::gettext;
-use chrono::Datelike;
 use gtk::glib;
 use regex;
+use gdk_pixbuf;
 
 mod person;
 mod constants;
@@ -199,19 +198,17 @@ fn build_ui(app: &Application) {
     // File menu buttons
     let open_btn = GtkButton::builder().label(&gettext("Open")).build();
     let save_btn = GtkButton::builder().label(&gettext("Save")).build();
-    let exit_btn = GtkButton::builder().label(&gettext("Exit")).build();
-    
-    // People menu buttons
     let add_btn = GtkButton::builder().label(&gettext("Add")).build();
     let edit_btn = GtkButton::builder().label(&gettext("Edit")).build();
     let delete_btn = GtkButton::builder().label(&gettext("Delete")).build();
+    let exit_btn = GtkButton::builder().label(&gettext("Exit")).build();
     
     menu_bar.append(&open_btn);
     menu_bar.append(&save_btn);
-    menu_bar.append(&exit_btn);
     menu_bar.append(&add_btn);
     menu_bar.append(&edit_btn);
     menu_bar.append(&delete_btn);
+    menu_bar.append(&exit_btn);
 
     // Create list store with column types
     let list_store = ListStore::new(
@@ -256,7 +253,23 @@ fn build_ui(app: &Application) {
         .default_width(600)
         .default_height(400)
         .child(&vbox)
+        .icon_name(APP_ID)
+        .resizable(true)
         .build();
+
+    // Try to load custom icon from data/icons/hicolor/128x128/apps/com.github.arickp.rustpeopledb.png
+    // This will work if the icon theme is set up, but for direct loading:
+    let icon_path = std::path::Path::new("data/icons/hicolor/128x128/apps/com.github.arickp.rustpeopledb.png");
+    if icon_path.exists() {
+        if let Ok(_pixbuf) = gdk_pixbuf::Pixbuf::from_file(icon_path) {
+            // GTK4 does not support set_icon on ApplicationWindow.
+            // Instead, set the icon theme for the app and use icon_name.
+            let display = gtk::prelude::WidgetExt::display(&window);
+            let theme = gtk::IconTheme::for_display(&display);
+            theme.add_resource_path("data/icons");
+            // The icon_name is already set to APP_ID, so if the icon is in the theme, it will be used.
+        }
+    }
 
     // Create app state
     let app_state = Rc::new(RefCell::new(AppState::new(list_store, &tree_view)));

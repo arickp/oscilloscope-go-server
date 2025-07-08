@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=People DB
+Exec=people-db-gtk
+Icon=com.github.arickp.rustpeopledb
+Categories=Utility;
