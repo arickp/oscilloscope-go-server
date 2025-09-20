@@ -11,5 +11,8 @@ Based on samples from the first chapter of _The Go Programming Language_ by
 Donovan and Kernighan, it's an exercise in handling HTTP requests and
 generates some interesting images using `ffmpeg`.
 
+Also, check out [rust-people-db](https://github.com/arickp/rust-people-db)
+for a simple application that manages a database of people, such as account holders.
+
 ## Contact
 [📎 LinkedIn](https://www.linkedin.com/in/eric-popelka-b6024145/)
