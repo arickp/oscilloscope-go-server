@@ -1,18 +1,103 @@
-# Eric Popelka's code samples
+# Oscilloscope Go Server by [Eric Popelka](https://github.com/arickp)
 
-Welcome! This repository is my digital portfolio, a collection of programming exercises that I am delighted to share with you.
+This is a lightweight Go server that serves animated WebP waveforms, with customizable foreground and background colors. It's based on the sample program in the first chapter of _The Go Programming Language_ 
+by Donovan and Kernighan. 
 
-## Contents:
+## 📸 Screenshot
+![User interface](./static/sample.jpg)
 
-### [oscilloscope-go-server](./oscilloscope-go-server)
+You'll have to run the program (by making requests to the server) for the full, animated experience!
 
-An HTTP server that serves up waveform animations, written in Go.
-Based on samples from the first chapter of _The Go Programming Language_ by
-Donovan and Kernighan, it's an exercise in handling HTTP requests and
-generates some interesting images using `ffmpeg`.
 
-Also, check out [rust-people-db](https://github.com/arickp/rust-people-db)
-for a simple application that manages a database of people, such as account holders.
+## 🚀 Features
 
-## Contact
-[📎 LinkedIn](https://www.linkedin.com/in/eric-popelka-b6024145/)
+- Customize waveform color (with alpha channel support)
+- Specify playback FPS for the output animation
+- Creates transparent WebP files
+- Configurable port via `PORT` environment variable. Default is 8000.
+- Lightweight and fast — written in pure Go
+
+---
+
+## 📦 Requirements
+
+- Go 1.24 or newer
+- [ffmpeg](https://ffmpeg.org)
+- Docker (optional)
+
+---
+
+## 🔧 Usage
+
+### ▶️ Run the server
+
+```bash
+go run main.go
+```
+
+### 🏗️ Build the binary
+
+```bash
+go build -o oscilloscope-go-server *.go
+```
+
+Then run it:
+
+```bash
+./oscilloscope-go-server
+```
+
+---
+
+## 🌐 Making a request
+
+### Demo page:
+
+```http
+http://localhost:8000/
+```
+
+Visiting / in your browser loads a built-in demo UI served by the Go backend — a static HTML page with a color picker, FPS control, and real-time preview.
+The Go server serves a static HTML page with a color picker, frame control, and a real-time preview of the 
+waveform. It uses JavaScript to call the /lissajous endpoint and render the generated animation.
+
+---
+
+### API:
+
+```http
+http://localhost:8000/lissajous?fgColor=%23rrggbbaa&bgColor=%23rrggbbaa&frames=x
+```
+
+* `fgColor` and `bgColor` must be hex strings in the form `#rrggbbaa` (URL-encoded as `%23rrggbbaa`).
+* Returns a response in `image/webp` format.
+
+---
+
+## 🧪 Dev Tips
+- To run the test suite:
+
+```bash
+go test ./...
+```
+
+- You can build a Docker image and run it using these commands:
+
+```bash
+docker build --tag oscilloscope-go-server .
+docker run -p 8000:8000 oscilloscope-go-server
+```
+
+- When calling the `/lissajous` endpoint, you can provide `random` as the value of
+  `fgColor` and/or `bgColor`.
+
+- Don’t forget to URL-encode `#` as `%23` when testing the API in the browser or curl/Postman.
+  
+## ♿️ 508 Compliant
+
+This project strives to meet **[Section 508](https://www.section508.gov/) accessibility standards**:
+
+- Keyboard-navigable interface
+- Screen reader-friendly structure
+- ARIA live regions for status updates
+- Color pickers with manual hex input fallback
